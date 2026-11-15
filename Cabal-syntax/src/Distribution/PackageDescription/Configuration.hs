@@ -60,7 +60,7 @@ import Distribution.Types.DependencyMap
 import Distribution.Types.DependencySatisfaction (DependencySatisfaction (..))
 import Distribution.Types.MissingDependency (MissingDependency (..))
 import Distribution.Types.PackageVersionConstraint
-import Distribution.Utils.Generic
+import Distribution.Utils.Generic (lowercase)
 import Distribution.Utils.Path (sameDirectory)
 import Distribution.Version
 

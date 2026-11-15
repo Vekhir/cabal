@@ -23,13 +23,13 @@ import qualified Text.PrettyPrint as Disp
 newtype PkgconfigName = PkgconfigName Text
   deriving (Generic, Read, Show, Eq, Ord, Data)
 
--- | Convert 'PkgconfigName' to 'String'
+-- | Convert 'PkgconfigName' to 'Text'
 --
 -- @since 2.0.0.2
-unPkgconfigName :: PkgconfigName -> String
-unPkgconfigName (PkgconfigName s) = Text.unpack s
+unPkgconfigName :: PkgconfigName -> Text
+unPkgconfigName (PkgconfigName s) = s
 
--- | Construct a 'PkgconfigName' from a 'String'
+-- | Construct a 'PkgconfigName' from a 'Text'
 --
 -- 'mkPkgconfigName' is the inverse to 'unPkgconfigName'
 --
@@ -37,14 +37,14 @@ unPkgconfigName (PkgconfigName s) = Text.unpack s
 -- 'PkgconfigName' is valid
 --
 -- @since 2.0.0.2
-mkPkgconfigName :: String -> PkgconfigName
-mkPkgconfigName = PkgconfigName . Text.pack
+mkPkgconfigName :: Text -> PkgconfigName
+mkPkgconfigName = PkgconfigName
 
 -- | 'mkPkgconfigName'
 --
 -- @since 2.0.0.2
 instance IsString PkgconfigName where
-  fromString = mkPkgconfigName
+  fromString = mkPkgconfigName . Text.pack
 
 instance Binary PkgconfigName
 instance Structured PkgconfigName
@@ -53,10 +53,10 @@ instance Structured PkgconfigName
 -- "gtk+-2.0" is a valid pkg-config package _name_.  It then has a package
 -- version number like 2.10.13
 instance Pretty PkgconfigName where
-  pretty = Disp.text . unPkgconfigName
+  pretty = Disp.text . Text.unpack . unPkgconfigName
 
 instance Parsec PkgconfigName where
-  parsec = mkPkgconfigName <$> P.munch1 isNameChar
+  parsec = mkPkgconfigName . Text.pack <$> P.munch1 isNameChar
     where
       -- https://gitlab.haskell.org/ghc/ghc/issues/17752
       isNameChar '-' = True

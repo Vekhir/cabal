@@ -53,6 +53,7 @@ import Data.Bool (bool)
 import qualified Data.ByteString.Lazy.Char8 as BS
 import qualified Data.Map as Map
 import qualified Data.Set as Set
+import Data.Text (Text)
 import qualified Data.Text as Text
 import Distribution.Backpack
 import Distribution.Compat.Stack
@@ -545,16 +546,16 @@ linkGhcOptions verbosity lbi bi clbi =
         , ghcOptCabal = toFlag True
         , ghcOptThisUnitId = case clbi of
             LibComponentLocalBuildInfo{componentCompatPackageKey = pk} ->
-              toFlag pk
+              toFlag $ Text.unpack pk
             _ | not (unitIdForExes implInfo) -> mempty
             ExeComponentLocalBuildInfo{componentUnitId = uid} ->
-              toFlag (unUnitId uid)
+              toFlag (Text.unpack (unUnitId uid))
             TestComponentLocalBuildInfo{componentUnitId = uid} ->
-              toFlag (unUnitId uid)
+              toFlag (Text.unpack (unUnitId uid))
             BenchComponentLocalBuildInfo{componentUnitId = uid} ->
-              toFlag (unUnitId uid)
+              toFlag (Text.unpack (unUnitId uid))
             FLibComponentLocalBuildInfo{componentUnitId = uid} ->
-              toFlag (unUnitId uid)
+              toFlag (Text.unpack (unUnitId uid))
         , ghcOptThisComponentId = case clbi of
             LibComponentLocalBuildInfo
               { componentComponentId = cid
@@ -629,11 +630,11 @@ filterGhciFlags = filter supported
     supported "-unreg" = False
     supported _ = True
 
-mkGHCiLibName :: UnitId -> String
-mkGHCiLibName lib = getHSLibraryName lib <.> "o"
+mkGHCiLibName :: UnitId -> Text
+mkGHCiLibName lib = getHSLibraryName lib <> Text.pack ".o"
 
-mkGHCiProfLibName :: UnitId -> String
-mkGHCiProfLibName lib = getHSLibraryName lib <.> "p_o"
+mkGHCiProfLibName :: UnitId -> Text
+mkGHCiProfLibName lib = getHSLibraryName lib <> Text.pack ".p_o"
 
 ghcLookupProperty :: String -> Compiler -> Bool
 ghcLookupProperty prop comp =

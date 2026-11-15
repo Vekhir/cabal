@@ -3,7 +3,7 @@ module Distribution.Solver.Modular.Package
   , Loc(..)
   , PackageId
   , PackageIdentifier(..)
-  , PackageName, mkPackageName, unPackageName
+  , PackageName, mkPackageNameST, unPackageName, unPackageNameST
   , PkgconfigName, mkPkgconfigName, unPkgconfigName
   , PI(..)
   , PN
